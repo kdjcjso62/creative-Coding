@@ -1,39 +1,45 @@
 let particles = [];
 
 function setup() {
-  createCanvas(600, 400);
+  createCanvas(windowWidth, windowHeight);
+  background(5, 5, 12);
 }
 
 function draw() {
-  background(20);
+  background(5, 5, 12, 35);
 
-  let floatY = sin(frameCount * 0.04) * 45;
+  let pulse = sin(frameCount * 0.03) * 5;
+  let ringSize = 180 + pulse;
 
-  let size = 140 + sin(frameCount * 0.06) * 25;
+  noFill();
+  stroke(80, 180, 255, 40);
+  strokeWeight(8);
+  ellipse(width / 2, height / 2, ringSize + 5);
 
-  let x = width / 2;
-  let y = height / 2 + floatY;
+  stroke(130, 210, 255);
+  strokeWeight(2);
+  ellipse(width / 2, height / 2, ringSize);
 
-  // 绘制蓝紫色实心球体
-  noStroke();
-  fill(100, 90, 255);
-  circle(x, y, size);
-
-  // 添加简单的柔和高光
-  fill(150, 140, 255, 100);
-  circle(x - size * 0.15, y - size * 0.18, size * 0.55);
 
   if (random(1) < 0.12) {
     let angle = random(TWO_PI);
+    let distance = ringSize / 2;
+
+    let x = width / 2 + cos(angle) * distance;
+    let y = height / 2 + sin(angle) * distance;
+
+    let speed = random(1, 3);
 
     particles.push({
-      x: x + cos(angle) * size / 2,
-      y: y + sin(angle) * size / 2,
-      vx: cos(angle) * random(1, 3),
-      vy: sin(angle) * random(1, 3),
+      x: x,
+      y: y,
+      vx: cos(angle) * speed,
+      vy: sin(angle) * speed,
+      size: random(2, 4),
       life: 255
     });
   }
+
 
   noStroke();
 
@@ -42,13 +48,17 @@ function draw() {
 
     p.x += p.vx;
     p.y += p.vy;
-    p.life -= 4;
+    p.life -= 3;
 
-    fill(130, 150, 255, p.life);
-    circle(p.x, p.y, 3);
+    fill(100, 190, 255, p.life);
+    circle(p.x, p.y, p.size);
 
     if (p.life <= 0) {
       particles.splice(i, 1);
     }
   }
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }
